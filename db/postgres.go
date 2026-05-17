@@ -58,6 +58,36 @@ func DeleteRecord(id string) error {
 	}
 	defer database.Close()
 
-	_, err = database.Exec("DELETE FROM resource_table WHERE id = $1", id)
-	return err
+	// Execute the delete query
+	result, err := database.Exec("DELETE FROM resource_table WHERE id = $1", id)
+	if err != nil {
+		return err
+	}
+
+	// Check if any row was actually deleted
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return fmt.Errorf("no record found with ID %s", id)
+	}
+
+	return nil
+}
+func UpdateRecord(id string, newData string) error {
+	database, err := ConnectDB()
+	if err != nil {
+		return err
+	}
+	defer database.Close()
+
+	result, err := database.Exec("UPDATE resource_table SET content = $1 WHERE id = $2", newData, id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return fmt.Errorf("no record found with ID %s to update", id)
+	}
+
+	return nil
 }

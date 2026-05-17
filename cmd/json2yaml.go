@@ -22,46 +22,39 @@ var json2yamlCmd = &cobra.Command{
 
 		input := args[0]
 
-		// ✅ validate file extension
 		if err := validateExt(input, ".json"); err != nil {
 			fmt.Println("Error:", err)
 			return
 		}
 
-		// ✅ read file
 		data, err := readFile(input)
 		if err != nil {
 			fmt.Println("File error:", err)
 			return
 		}
 
-		// ✅ parse JSON
 		var obj interface{}
 		if err := json.Unmarshal(data, &obj); err != nil {
 			fmt.Println("Invalid JSON format")
 			return
 		}
 
-		// ✅ convert to YAML
 		yamlData, err := yaml.Marshal(obj)
 		if err != nil {
 			fmt.Println("YAML conversion error:", err)
 			return
 		}
 
-		// ⭐ PRINT OUTPUT (this is what you asked for)
 		if printOutput {
 			fmt.Println("----- YAML OUTPUT -----")
 			fmt.Println(string(yamlData))
 		}
 
-		// ✅ decide output file name
 		outFile := json2yamlOutput
 		if outFile == "" {
-			outFile = generateOutput(input, ".yaml")
+
 		}
 
-		// ✅ save file
 		err = os.WriteFile(outFile, yamlData, 0644)
 		if err != nil {
 			fmt.Println("Write file error:", err)

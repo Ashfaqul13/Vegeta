@@ -22,46 +22,39 @@ var yaml2jsonCmd = &cobra.Command{
 
 		input := args[0]
 
-		// ✅ validate file extension
 		if err := validateExt(input, ".yaml", ".yml"); err != nil {
 			fmt.Println("Error:", err)
 			return
 		}
 
-		// ✅ read file
 		data, err := readFile(input)
 		if err != nil {
 			fmt.Println("File error:", err)
 			return
 		}
 
-		// ✅ parse YAML
 		var obj interface{}
 		if err := yaml.Unmarshal(data, &obj); err != nil {
 			fmt.Println("Invalid YAML format")
 			return
 		}
 
-		// ✅ convert to JSON
 		jsonData, err := json.MarshalIndent(obj, "", "  ")
 		if err != nil {
 			fmt.Println("JSON conversion error:", err)
 			return
 		}
 
-		// ⭐ PRINT OUTPUT (optional)
 		if yamlPrintOutput {
 			fmt.Println("----- JSON OUTPUT -----")
 			fmt.Println(string(jsonData))
 		}
 
-		// ✅ output file name
 		outFile := yaml2jsonOutput
 		if outFile == "" {
 
 		}
 
-		// ✅ write file
 		err = os.WriteFile(outFile, jsonData, 0644)
 		if err != nil {
 			fmt.Println("Write file error:", err)
